@@ -1,0 +1,384 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Manufacturing FMS Design System - Industrial Theme */
+
+@layer base {
+  :root {
+    /* Global Neon Dashboard Palette (Derived from user mock) */
+    --background: 236 30% 12%;
+    /* Deep Indigo Base (#16182B) */
+    --foreground: 0 0% 100%;
+    /* White */
+
+    --card: 237 28% 16%;
+    /* Soft Sub-panel (#1E2036) */
+    --card-foreground: 0 0% 100%;
+
+    --popover: 237 28% 16%;
+    --popover-foreground: 0 0% 100%;
+
+    /* Bright Neon Cyan (#00E5FF) */
+    --primary: 186 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Subtle Accent Indigo */
+    --secondary: 238 32% 22%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 238 32% 22%;
+    --muted-foreground: 220 18% 70%;
+
+    /* Vibrant Neon Pink/Magenta */
+    --accent: 330 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 348 83% 47%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 238 32% 25%;
+    --input: 238 32% 25%;
+    --ring: 186 100% 50%;
+
+    --radius: 0.5rem;
+
+    /* Glowing Neon Status Colors */
+    --status-success: 160 100% 65%;
+    /* Bright Mint */
+    --status-success-bg: 160 100% 15%;
+    --status-warning: 45 100% 60%;
+    /* Bright Orange/Gold */
+    --status-warning-bg: 45 100% 15%;
+    --status-critical: 340 100% 60%;
+    /* Bright Pink/Red */
+    --status-critical-bg: 340 100% 15%;
+    --status-info: 186 100% 60%;
+    /* Cyan */
+    --status-info-bg: 186 100% 15%;
+
+    /* Priority Colors */
+    --priority-low: 160 100% 65%;
+    --priority-medium: 45 100% 60%;
+    --priority-high: 15 100% 65%;
+    --priority-critical: 340 100% 60%;
+
+    /* Machine Status */
+    --machine-running: 160 100% 65%;
+    --machine-down: 340 100% 60%;
+    --machine-maintenance: 45 100% 60%;
+
+    /* Vibrant KPI Gradients (Pink -> Violet, Cyan -> Blue) */
+    --kpi-gradient-1: 330 100% 50%;
+    --kpi-gradient-2: 270 100% 50%;
+    --kpi-gradient-3: 186 100% 50%;
+    --kpi-gradient-4: 210 100% 50%;
+
+    /* Ambient Shadows */
+    --shadow-sm: 0 2px 4px 0 hsl(237 28% 5% / 0.5);
+    --shadow-md: 0 8px 16px -4px hsl(237 28% 5% / 0.5), 0 4px 8px -4px hsl(237 28% 5% / 0.5);
+    --shadow-lg: 0 12px 24px -8px hsl(237 28% 5% / 0.8), 0 8px 12px -6px hsl(237 28% 5% / 0.8);
+    --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.4), inset 0 1px 1px hsl(0 0% 100% / 0.05);
+
+    /* Sidebar - Transparent Glass Look */
+    --sidebar-background: 236 30% 10%;
+    /* Even deeper than body */
+    --sidebar-foreground: 220 20% 85%;
+    --sidebar-primary: 186 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 238 32% 16%;
+    --sidebar-accent-foreground: 186 100% 50%;
+    --sidebar-border: 238 32% 20%;
+    --sidebar-ring: 186 100% 50%;
+  }
+
+  .dark {
+    /* Identical mapping because the original app is dark by default now */
+    --background: 236 30% 12%;
+    --foreground: 0 0% 100%;
+
+    --card: 237 28% 16%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 237 28% 16%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 186 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 238 32% 22%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 238 32% 22%;
+    --muted-foreground: 220 18% 70%;
+
+    --accent: 330 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 348 83% 47%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 238 32% 25%;
+    --input: 238 32% 25%;
+    --ring: 186 100% 50%;
+
+    --sidebar-background: 236 30% 10%;
+    --sidebar-foreground: 220 20% 85%;
+    --sidebar-primary: 186 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 238 32% 16%;
+    --sidebar-accent-foreground: 186 100% 50%;
+    --sidebar-border: 238 32% 20%;
+    --sidebar-ring: 186 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  code,
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+
+  /* Dark Neon Glass panel style */
+  .card-industrial {
+    @apply bg-card/70 backdrop-blur-md rounded-2xl border border-white/[0.05] transition-shadow;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-industrial:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .glass-panel {
+    @apply bg-card/70 backdrop-blur-md rounded-2xl border border-white/[0.05] shadow-lg;
+  }
+
+  /* KPI Card Gradients */
+  .kpi-primary {
+    background: linear-gradient(135deg, hsl(var(--kpi-gradient-1)) 0%, hsl(var(--kpi-gradient-2)) 100%);
+    @apply border-0;
+    box-shadow: 0 4px 20px hsl(var(--kpi-gradient-1) / 0.4);
+  }
+
+  .kpi-success {
+    background: linear-gradient(135deg, hsl(var(--kpi-gradient-3)) 0%, hsl(var(--kpi-gradient-4)) 100%);
+    @apply border-0;
+    box-shadow: 0 4px 20px hsl(var(--kpi-gradient-3) / 0.4);
+  }
+
+  .kpi-warning {
+    background: linear-gradient(135deg, hsl(45 100% 50%) 0%, hsl(30 100% 50%) 100%);
+    @apply border-0;
+    box-shadow: 0 4px 20px hsl(45 100% 50% / 0.4);
+  }
+
+  .kpi-danger {
+    background: linear-gradient(135deg, hsl(340 100% 60%) 0%, hsl(320 100% 50%) 100%);
+    @apply border-0;
+    box-shadow: 0 4px 20px hsl(340 100% 60% / 0.4);
+  }
+
+  /* Status Badges */
+  .status-running {
+    @apply bg-[hsl(var(--status-success-bg))] text-[hsl(var(--status-success))] border-[hsl(var(--status-success)/0.3)];
+  }
+
+  .status-down {
+    @apply bg-[hsl(var(--status-critical-bg))] text-[hsl(var(--status-critical))] border-[hsl(var(--status-critical)/0.3)];
+  }
+
+  .status-maintenance {
+    @apply bg-[hsl(var(--status-warning-bg))] text-[hsl(var(--status-warning))] border-[hsl(var(--status-warning)/0.3)];
+  }
+
+  /* Priority Badges */
+  .priority-low {
+    @apply bg-[hsl(var(--priority-low)/0.1)] text-[hsl(var(--priority-low))] border-[hsl(var(--priority-low)/0.3)];
+  }
+
+  .priority-medium {
+    @apply bg-[hsl(var(--priority-medium)/0.1)] text-[hsl(var(--priority-medium))] border-[hsl(var(--priority-medium)/0.3)];
+  }
+
+  .priority-high {
+    @apply bg-[hsl(var(--priority-high)/0.1)] text-[hsl(var(--priority-high))] border-[hsl(var(--priority-high)/0.3)];
+  }
+
+  .priority-critical {
+    @apply bg-[hsl(var(--priority-critical)/0.1)] text-[hsl(var(--priority-critical))] border-[hsl(var(--priority-critical)/0.3)];
+  }
+
+  /* Dashboard Grid */
+  .dashboard-grid {
+    @apply grid gap-4 md:gap-6 lg:gap-8;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  /* Industrial Table -> Glass Table */
+  .table-industrial {
+    @apply w-full text-sm;
+  }
+
+  .table-industrial th {
+    @apply bg-transparent font-medium text-muted-foreground uppercase text-xs tracking-wider px-4 py-4 text-left border-b border-border;
+  }
+
+  .table-industrial td {
+    @apply px-4 py-4 border-b border-white/[0.02];
+  }
+
+  .table-industrial tr {
+    @apply transition-colors;
+  }
+
+  .table-industrial tr:hover {
+    @apply bg-white/[0.02];
+  }
+
+  /* Navigation Sidebar updates */
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-sidebar-foreground/80 hover:bg-white/[0.05] hover:text-white transition-all duration-200;
+  }
+
+  .nav-item-active {
+    @apply bg-primary/10 text-primary font-medium border border-primary/20;
+    box-shadow: 0 0 15px hsla(var(--primary), 0.2);
+  }
+
+  /* Form Styles */
+  .form-label {
+    @apply text-sm font-medium text-foreground/80 mb-2 block;
+  }
+
+  .form-input {
+    @apply w-full px-4 py-2.5 rounded-xl border border-white/[0.08] bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:bg-background transition-all;
+  }
+
+  /* Pulse Animation for Critical Items */
+  @keyframes pulse-critical {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .pulse-critical {
+    animation: pulse-critical 2s ease-in-out infinite;
+  }
+
+  /* Progress Bar Glow */
+  .progress-industrial {
+    @apply h-2 bg-muted rounded-full overflow-hidden;
+  }
+
+  .progress-industrial-fill {
+    @apply h-full rounded-full transition-all duration-500 shadow-[0_0_10px_currentColor];
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+}
+
+/* Print Styles - Hide sidebar and make content full width */
+@media print {
+
+  /* Hide sidebar, header, and non-printable elements */
+  nav,
+  aside,
+  header,
+  .no-print,
+  button,
+  [data-sidebar],
+  .print\\:hidden {
+    display: none !important;
+  }
+
+  /* Remove sidebar margin and make content full width */
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Override the ml-64 / ml-[72px] sidebar offset */
+  main,
+  [class*="ml-64"],
+  [class*="ml-\\[72px\\]"] {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Ensure cards don't have shadows in print */
+  .card-industrial {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+
+  /* Allow scroll areas to show full content */
+  [data-radix-scroll-area-viewport] {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Page break controls */
+  .print\\:break-before-page {
+    page-break-before: always;
+  }
+
+  /* Ensure proper page sizing */
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+}

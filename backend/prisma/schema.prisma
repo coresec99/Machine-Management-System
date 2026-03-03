@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  passwordHash       String
+  role               String              @default("OPERATOR")
+  profile            Profile?
+  taskLogNotes       TaskLogNote[]
+  notifications      Notification[]
+  assignedTasks      Breakdown[]         @relation("AssignedTo")
+  assignedByTasks    Breakdown[]         @relation("AssignedBy")
+  reportedTasks      Breakdown[]         @relation("ReportedBy")
+  maintenanceRecords MaintenanceRecord[]
+  partReplacements   PartReplacement[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model Profile {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  department String?
+  avatarUrl  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Machine {
+  id                     String    @id @default(uuid())
+  machineId              String    @unique
+  name                   String
+  type                   String
+  location               String
+  serialNumber           String?
+  status                 String    @default("running") // running, down, maintenance
+  health                 String    @default("good") // good, warning, critical
+  installationDate       DateTime?
+  lastMaintenance        DateTime?
+  nextMaintenance        DateTime?
+  maintenanceFrequency   String?
+  description            String?
+  isActive               Boolean   @default(true)
+  fuelType               String?
+  fuelConsumptionMonthly Float?
+  imageUrl               String?
+
+  // Ownership & Responsibility
+  assignedManagerId  String?
+  defaultTechnicianId String?
+  backupSupervisorId String?
+  maintenanceTeamId  String?
+  technicianGroupId  String?
+
+  // Vendor & Procurement
+  vendorName     String?
+  vendorContact  String?
+  vendorEmail    String?
+  warrantyStart  DateTime?
+  warrantyEnd    DateTime?
+  amcStatus      Boolean   @default(false)
+  supportContact String?
+
+  // Maintenance Config
+  pmCycleDays Int?
+  slaHours    Int? // Maximum downtime allowed before SLA breach
+
+  // Asset Documentation URLs (comma separated or JSON)
+  userManualUrl     String?
+  serviceManualUrl  String?
+  sopUrl            String?
+  complianceCertUrl String?
+
+  breakdowns         Breakdown[]
+  maintenanceRecords MaintenanceRecord[]
+  partReplacements   PartReplacement[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model Breakdown {
+  id               String            @id @default(uuid())
+  breakdownId      String            @unique
+  machineId        String
+  machine          Machine           @relation(fields: [machineId], references: [id])
+  title            String
+  description      String
+  category         String
+  priority         String // low, medium, high, critical
+  status           String            @default("open") // open, in_progress, resolved, closed, scheduled, pending_review, overdue, delayed
+  
+  // Breakdown Specific
+  startTime        DateTime          @default(now())
+  endTime          DateTime?
+  
+  // SLA & Workflow tracking
+  assignmentTime           DateTime?
+  assignedById             String?
+  assignedBy               User?             @relation("AssignedBy", fields: [assignedById], references: [id])
+  technicianAcceptanceTime DateTime?
+  estimatedResolutionTime  DateTime?
+  slaDeadline              DateTime?
+  slaBreached              Boolean?          @default(false)
+  slaBreachTime            DateTime?
+  
+  // Maintenance Specific
+  maintenanceType  String? // Preventive, Routine, Inspection, Calibration, Emergency
+  plannedDate      DateTime?
+  estimatedDuration Int? // in hours
+  actualStartTime  DateTime?
+  actualEndTime    DateTime?
+  checklistCompleted Boolean?        @default(false)
+  observations     String?
+  managerApprovalTime DateTime?
+  escalationTime   DateTime?
+  
+  reportedById     String?
+  reportedBy       User?             @relation("ReportedBy", fields: [reportedById], references: [id])
+  assignedToId     String?
+  assignedTo       User?             @relation("AssignedTo", fields: [assignedToId], references: [id])
+  actionTaken      String?
+  resolutionNotes  String?
+  taskLogNotes     TaskLogNote[]
+  partReplacements PartReplacement[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model TaskLogNote {
+  id           String    @id @default(uuid())
+  breakdownId  String
+  breakdown    Breakdown @relation(fields: [breakdownId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  note         String
+  workStatus   String
+  workDuration Int?
+  createdAt    DateTime  @default(now())
+}
+
+model Notification {
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title              String
+  message            String
+  type               String
+  isRead             Boolean  @default(false)
+  emailSent          Boolean  @default(false)
+  relatedBreakdownId String?
+  createdAt          DateTime @default(now())
+}
+
+model MaintenanceRecord {
+  id              String   @id @default(uuid())
+  machineId       String
+  machine         Machine  @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  maintenanceDate DateTime @default(now())
+  type            String // preventive, corrective, predictive
+  technicianId    String?
+  technician      User?    @relation(fields: [technicianId], references: [id])
+  durationHours   Float?
+  partsReplaced   String? // JSON or comma separated string
+  approvalStatus  String   @default("pending") // pending, approved, rejected
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model PartReplacement {
+  id           String     @id @default(uuid())
+  machineId    String
+  machine      Machine    @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  breakdownId  String?
+  breakdown    Breakdown? @relation(fields: [breakdownId], references: [id])
+  partName     String
+  quantityUsed Int        @default(1)
+  replacedDate DateTime   @default(now())
+  replacedById String?
+  replacedBy   User?      @relation(fields: [replacedById], references: [id])
+  notes        String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}

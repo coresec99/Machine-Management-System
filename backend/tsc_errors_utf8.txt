@@ -1,0 +1,4 @@
+﻿src/index.ts(4,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/middleware/auth.ts(3,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/auth.ts(4,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/machines.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
