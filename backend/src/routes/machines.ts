@@ -205,9 +205,12 @@ router.post('/', authenticate, requireRole(['admin', 'manager']), async (req: Au
         });
 
         res.status(201).json(mapMachineToResponse(createdMachine));
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating machine:', error);
-        res.status(500).json({ error: 'Error creating machine' });
+        if (error.code === 'P2002') {
+            return res.status(400).json({ error: 'A machine with this Machine No. already exists' });
+        }
+        res.status(500).json({ error: error.message || 'Error creating machine' });
     }
 });
 
@@ -308,9 +311,12 @@ router.put('/:id', authenticate, requireRole(['admin', 'manager']), async (req: 
         });
 
         res.json(mapMachineToResponse(updatedMachine));
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error updating machine:', error);
-        res.status(500).json({ error: 'Error updating machine' });
+        if (error.code === 'P2002') {
+            return res.status(400).json({ error: 'A machine with this Machine No. already exists' });
+        }
+        res.status(500).json({ error: error.message || 'Error updating machine' });
     }
 });
 

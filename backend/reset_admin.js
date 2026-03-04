@@ -1,23 +1,20 @@
-const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+async function reset() {
+    process.env.DATABASE_URL = process.env.RENDER_DB_URL;
+    const pgPrisma = new PrismaClient({
+        datasources: { db: { url: process.env.RENDER_DB_URL } }
+    });
 
-async function resetAdmin() {
-    try {
-        const salt = await bcrypt.genSalt(10);
-        const passwordHash = await bcrypt.hash('admin', salt);
+    console.log('Resetting passwords...');
+    const hash = await bcrypt.hash('password', 10);
+    await pgPrisma.user.updateMany({
+        data: { passwordHash: hash }
+    });
 
-        await prisma.user.update({
-            where: { email: 'admin@mms.com' },
-            data: { passwordHash }
-        });
-        console.log('Password reset to "admin" for admin@mms.com');
-    } catch (e) {
-        console.error(e);
-    } finally {
-        await prisma.$disconnect();
-    }
+    console.log('Passwords reset successfully. You can now login with "password"');
+    await pgPrisma.$disconnect();
 }
 
-resetAdmin();
+reset();
